@@ -4,7 +4,7 @@ from slackclient import SlackClient
 #from pymongo import MongoClient
 
 BOT_ID = os.environ.get("BOT_ID")
-AT_BOT = "<@" + BOT_ID + ">:"
+AT_BOT = "<@" + BOT_ID + ">"
 HELLO_COMMAND = "hello"
 PLAY_COMMAND = "play"
 CLEAR_COMMAND = "clear all"
@@ -24,7 +24,7 @@ def handle_command(command, channel):
 #    if command.startswith(CLEAR_COMMAND):
 #        db['playlist'].delete_many({})
 #        response = "Sure...I will stop playing"
-    if command.startswith(PLAY_COMMAND):
+    if command.startswith(HELLO_COMMAND):
         response = "You say hello, I say world!"
 #    elif command.startswith(PLAY_COMMAND):
 #        play_list_coll = db['playlist']
@@ -66,5 +66,3 @@ if __name__ == "__main__":
             time.sleep(READ_WEBSOCKET_DELAY)
     else:
         print("Connection failed. Invalid Slack token or bot ID?")
-
-0
