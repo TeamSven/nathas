@@ -8,7 +8,6 @@ def is_artist(token):
     items = results['artists']['items']
 
     if len(items) > 0:
-        print items
         return True
     else:
         return False
@@ -25,6 +24,3 @@ def get_related_artists(token):
             for ra in related_artists['artists']:
                 result.append(ra['name'])
             return result
-
-if __name__ == "__main__":
-    print is_artist(" A R Rahman")

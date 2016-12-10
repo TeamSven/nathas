@@ -79,12 +79,15 @@ def play(slack_client, command, user, channel):
 
 def next(slack_client, channel):
     cursor = db['playlist'].find().sort([("requested_at", ASCENDING)]).limit(2)
-    cursor.next()
-    next_song = cursor.next()
+    try:
+        cursor.next()
+        next_song = cursor.next()
+        title = next_song['request_string']
+        attachment = [{"color": "#439FE0","title": "Now Playing","text": title}]
+        slack_client.api_call("chat.postMessage", channel=channel, attachments=attachment, text=title, as_user=True)
+    except StopIteration:
+        pass
     urllib2.urlopen(NATHAS_UI_ENDPOINT + "/next").read()
-    title = next_song['request_string']
-    attachment = [{"color": "#439FE0","title": "Now Playing","text": title}]
-    slack_client.api_call("chat.postMessage", channel=channel, attachments=attachment, text=title, as_user=True)
 
 def pause():
     urllib2.urlopen(NATHAS_UI_ENDPOINT + "/pause").read()
@@ -92,11 +95,12 @@ def pause():
 
 def resume(slack_client, channel):
     cursor = db['playlist'].find().sort([("requested_at", ASCENDING)]).limit(1)
-    next_song = cursor.next()
-    title = next_song['request_string']
+    if cursor.hasNext():
+        next_song = cursor.next()
+        title = next_song['request_string']
+        attachment = [{"color": "#439FE0","title": "Now Playing","text": title}]
+        slack_client.api_call("chat.postMessage", channel=channel, attachments=attachment, text=title, as_user=True)
     urllib2.urlopen(NATHAS_UI_ENDPOINT + "/resume").read()
-    attachment = [{"color": "#439FE0","title": "Now Playing","text": title}]
-    slack_client.api_call("chat.postMessage", channel=channel, attachments=attachment, text=title, as_user=True)
 
 def volume_up():
     urllib2.urlopen(NATHAS_UI_ENDPOINT + "/volumeup").read()

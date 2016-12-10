@@ -33,7 +33,6 @@ def search_list(options):
   # matching videos, channels, and playlists.
   for search_result in search_response.get("items", []):
     if search_result["id"]["kind"] == "youtube#channel":
-      print search_result
       channels.append((search_result["snippet"]["title"], search_result["id"]["channelId"]))
 
   return channels
@@ -96,12 +95,7 @@ def get_channel_top_playlist(channel_id):
 
 
 if __name__ == "__main__":
-  #argparser.add_argument("--q", help="Search term", default="Google")
-  #argparser.add_argument("--max-results", help="Max results", default=25)
-  #args = argparser.parse_args()
-
   try:
-    #print search_list({'q': 'hans zimmer', 'max_results': 5})
     get_top_tracks_for_channel('UCfCNL5oajlQBAlyjWv1ChVw')
   except HttpError, e:
-    print "An HTTP error %d occurred:\n%s" % (e.resp.status, e.content)
+    print ("An HTTP error %d occurred:\n%s" % (e.resp.status, e.content))

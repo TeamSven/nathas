@@ -1,7 +1,7 @@
-import os
-import time
+import os, time
 from slackclient import SlackClient
 from pymongo import MongoClient
+from apscheduler.schedulers.background import BackgroundScheduler
 
 import commands
 
@@ -69,7 +69,6 @@ def parse_slack_output(slack_rtm_output):
     output_list = slack_rtm_output
     if output_list and len(output_list) > 0:
         for output in output_list:
-            print output, "\n"
             if output and 'text' in output and AT_BOT in output['text']:
                 # return text after the @ mention, whitespace removed
                 return output['text'].split(AT_BOT)[1].strip().lower(), \
@@ -77,10 +76,24 @@ def parse_slack_output(slack_rtm_output):
                        output['channel']
     return None, None, None
 
+def suggestion_engine():
+    if db['playlist'].find().count() == 0:
+        response = "```Your queue is empty. Here are few suggestions for you \n"
+        response += "1. *Malare Ninne* \n"
+        response += "2. *Kaalam kettu poi* \n"
+        response += "3. *Chinna Chinna premam* \n"
+        response += "4. *Pularikalo Charlie* \n"
+        response += "5. *Akkam pakkam paar* \n```"
+        slack_client.api_call("chat.postMessage", channel="C3DR3NLET", text=response, as_user=True)
+
+
 if __name__ == "__main__":
     READ_WEBSOCKET_DELAY = 1 # 1 second delay between reading from firehose
     if slack_client.rtm_connect():
         print("nathas connected and running!")
+        bg_scheduler = BackgroundScheduler()
+        bg_scheduler.add_job(suggestion_engine, 'interval', seconds=60)
+        bg_scheduler.start()
         while True:
             command, user, channel = parse_slack_output(slack_client.rtm_read())
             if command and user and channel:
