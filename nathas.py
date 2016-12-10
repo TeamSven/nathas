@@ -46,7 +46,7 @@ def handle_command(command, user, channel):
     elif command.startswith(PAUSE_COMMAND):
         response = commands.pause()
     elif command.startswith(NEXT_COMMAND) or command.startswith(NEXT_COMMAND_1):
-        response = commands.next()
+        response = commands.next(slack_client, channel)
     elif command.startswith(RESUME_COMMAND):
         response = commands.resume()
     elif command.startswith(PLAY_COMMAND):
@@ -56,8 +56,8 @@ def handle_command(command, user, channel):
     elif command.startswith(VOLUME_DOWN_COMMAND) or command.startswith(VOLUME_DOWN_COMMAND1):
         response = commands.volume_down()
 
-    slack_client.api_call("chat.postMessage", channel=channel,
-                          text=response, as_user=True)
+    if response:
+        slack_client.api_call("chat.postMessage", channel=channel,text=response, as_user=True)
 
 
 def parse_slack_output(slack_rtm_output):

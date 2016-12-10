@@ -1,4 +1,4 @@
-import os, re, time
+import os, re, time, json
 import urllib2
 from pymongo import MongoClient, ASCENDING
 import youtube_util
@@ -48,8 +48,6 @@ def play(slack_client, command, user, channel):
     except AttributeError:
         request_record["request_string"] = request
 
-    play_list_coll.insert_one(request_record)
-
     channelId = youtube_util.is_artist(request)
     if channelId:
         tracks = youtube_search.get_top_tracks_for_channel(channelId)
@@ -58,6 +56,7 @@ def play(slack_client, command, user, channel):
             response += str(index) + ". *" + track + "*\n"
         return response + '```'
 
+    play_list_coll.insert_one(request_record)
     prev_queue_size = play_list_coll.count() - 1
 
     if prev_queue_size == 0:
@@ -78,9 +77,14 @@ def play(slack_client, command, user, channel):
 
     return response
 
-def next():
+def next(slack_client, channel):
+    cursor = db['playlist'].find().sort([("requested_at", ASCENDING)]).limit(2)
+    cursor.next()
+    next_song = cursor.next()
     urllib2.urlopen(NATHAS_UI_ENDPOINT + "/next").read()
-    return "Consider it done"
+    title = next_song['request_string']
+    attachment = [{"color": "#439FE0","title": "Now Playing","text": title}]
+    slack_client.api_call("chat.postMessage", channel=channel, attachments=attachment, text=title, as_user=True)
 
 def pause():
     urllib2.urlopen(NATHAS_UI_ENDPOINT + "/pause").read()
