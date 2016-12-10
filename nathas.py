@@ -14,6 +14,7 @@ HELP_COMMAND = "help"
 PLAY_COMMAND = "play"
 PAUSE_COMMAND = "pause"
 NEXT_COMMAND = "next"
+NEXT_COMMAND_1  = "play next"
 CLEAR_COMMAND = "clear all"
 
 slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
@@ -34,8 +35,11 @@ def handle_command(command, user, channel):
         response = commands.help()
     elif command.startswith(CLEAR_COMMAND):
         response = commands.clear_all()
+    elif command.startswith(NEXT_COMMAND) or command.startswith(NEXT_COMMAND_1):
+        response = commands.next()
     elif command.startswith(PLAY_COMMAND):
         response = commands.play(command, user, channel)
+
 
     slack_client.api_call("chat.postMessage", channel=channel,
                           text=response, as_user=True)

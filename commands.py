@@ -1,6 +1,9 @@
 import os, re, time
+import urllib2
 from pymongo import MongoClient
+import youtube_util
 
+NATHAS_UI_ENDPOINT = os.environ.get("NATHAS_UI_ENDPOINT")
 mongo_client = MongoClient()
 db = mongo_client['nathas']
 
@@ -24,24 +27,34 @@ def play(command, user, channel):
     }
 
     request = ' '.join(command.split(' ')[1:])
+    artist = ''
     try:
         request = re.search("(?P<url>https?://[^\s]+)", request).group("url")
         request_record["request_url"] = request
     except AttributeError:
         request_record["request_string"] = request
+        artists = youtube_util.get_artists(request)
 
     play_list_coll.insert_one(request_record)
 
     prev_queue_size = play_list_coll.count() - 1
+
     if prev_queue_size == 0:
-        return 'Sure... \'' +  request + '\' will be played next'
+        response = 'Sure... \'' +  request + '\' will be played next'
     elif prev_queue_size == 1:
-        return 'Sure... \'' +  request + '\' will be played after 1 song'
+        response = 'Sure... \'' +  request + '\' will be played after 1 song'
     else:
-        return 'Sure... \'' +  request + '\' will be played after ' + str(prev_queue_size) + ' songs'
+        response = 'Sure... \'' +  request + '\' will be played after ' + str(prev_queue_size) + ' songs'
+
+    print artists
+    if len(artists) > 0:
+        response += "\n The song was by `" + '`,`'.join(artists) + "`"
+
+    return response
 
 def pause():
     return "Not Yet Implemented"
 
 def next():
-    return "Not Yet Implemented"
+    urllib2.urlopen(NATHAS_UI_ENDPOINT + "/next").read()
+    return "Consider it done"
