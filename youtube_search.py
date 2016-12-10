@@ -97,5 +97,5 @@ def get_channel_top_playlist(channel_id):
 if __name__ == "__main__":
   try:
     get_top_tracks_for_channel('UCfCNL5oajlQBAlyjWv1ChVw')
-  except HttpError, e:
+  except HttpError:
     print ("An HTTP error %d occurred:\n%s" % (e.resp.status, e.content))

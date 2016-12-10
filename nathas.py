@@ -18,6 +18,7 @@ PAUSE_COMMAND = "pause"
 NEXT_COMMAND = "next"
 NEXT_COMMAND_1  = "play next"
 CLEAR_COMMAND = "clear all"
+SHUFFLE_COMMAND = "shuffle"
 VOLUME_UP_COMMAND = "volume up"
 VOLUME_UP_COMMAND1 = "volumeup"
 VOLUME_DOWN_COMMAND = "volume down"
@@ -28,11 +29,6 @@ mongo_client = MongoClient()
 db = mongo_client['nathas']
 
 def handle_command(command, user, channel):
-    """
-        Receives commands directed at the bot and determines if they
-        are valid commands. If so, then acts on the commands. If not,
-        returns back what it needs for clarification.
-    """
     response = "Not sure what you mean. Use `help` command"
 
     if command.startswith(HELLO_COMMAND):
@@ -49,6 +45,8 @@ def handle_command(command, user, channel):
         response = commands.next(slack_client, channel)
     elif command.startswith(RESUME_COMMAND):
         response = commands.resume(slack_client, channel)
+    elif command.startswith(SHUFFLE_COMMAND):
+        response = commands.shuffle()
     elif command.startswith(PLAY_COMMAND):
         response = commands.play(slack_client, command, user, channel)
     elif command.startswith(VOLUME_UP_COMMAND) or command.startswith(VOLUME_UP_COMMAND1):
@@ -61,19 +59,12 @@ def handle_command(command, user, channel):
 
 
 def parse_slack_output(slack_rtm_output):
-    """
-        The Slack Real Time Messaging API is an events firehose.
-        this parsing function returns None unless a message is
-        directed at the Bot, based on its ID.
-    """
     output_list = slack_rtm_output
     if output_list and len(output_list) > 0:
         for output in output_list:
             if output and 'text' in output and AT_BOT in output['text']:
-                # return text after the @ mention, whitespace removed
                 return output['text'].split(AT_BOT)[1].strip().lower(), \
-                       output['user'], \
-                       output['channel']
+                       output['user'], output['channel']
     return None, None, None
 
 def suggestion_engine():
