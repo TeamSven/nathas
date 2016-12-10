@@ -4,6 +4,12 @@
 
 ![Nathas](nathas.png)
 
+## What does it do?
+
+* Nathas provides a Slack bot to sit on your slack channel and listen to your teams music request. Nathas queue up your requests and stream them for your team all day long.
+* [Nathas Frontend](https://github.com/TeamSven/nathas-frontend) provide a web application for your to enjoy the music chosen by your team. 
+* When you run out of songs, Nathas will come to resue with music suggestion based on your team's music taste.
+
 ## Usage
 
 ### 1. Creating 3rd party accounts
