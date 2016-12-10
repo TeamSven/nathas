@@ -1,3 +1,3 @@
 # Nathas, your Slack DJ
 
-[Nathas!](nathas.png)
+![Nathas](nathas.png)
