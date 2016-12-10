@@ -90,9 +90,13 @@ def pause():
     urllib2.urlopen(NATHAS_UI_ENDPOINT + "/pause").read()
     return "Consider it done"
 
-def resume():
+def resume(slack_client, channel):
+    cursor = db['playlist'].find().sort([("requested_at", ASCENDING)]).limit(1)
+    next_song = cursor.next()
+    title = next_song['request_string']
     urllib2.urlopen(NATHAS_UI_ENDPOINT + "/resume").read()
-    return "Consider it done"
+    attachment = [{"color": "#439FE0","title": "Now Playing","text": title}]
+    slack_client.api_call("chat.postMessage", channel=channel, attachments=attachment, text=title, as_user=True)
 
 def volume_up():
     urllib2.urlopen(NATHAS_UI_ENDPOINT + "/volumeup").read()

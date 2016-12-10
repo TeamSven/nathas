@@ -48,7 +48,7 @@ def handle_command(command, user, channel):
     elif command.startswith(NEXT_COMMAND) or command.startswith(NEXT_COMMAND_1):
         response = commands.next(slack_client, channel)
     elif command.startswith(RESUME_COMMAND):
-        response = commands.resume()
+        response = commands.resume(slack_client, channel)
     elif command.startswith(PLAY_COMMAND):
         response = commands.play(slack_client, command, user, channel)
     elif command.startswith(VOLUME_UP_COMMAND) or command.startswith(VOLUME_UP_COMMAND1):
