@@ -1,2 +1,3 @@
-# nathas
-Nathas, the Slack DJ
+# Nathas, your Slack DJ
+
+[Nathas!](nathas.png)

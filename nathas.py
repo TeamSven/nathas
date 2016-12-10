@@ -33,7 +33,7 @@ def handle_command(command, channel):
             "request_string": request,
             "requested_at": long(time.time())
         })
-        response = 'Sure... \'' +  request+ '\' will be played after ' + str(play_list_coll.count()) + ' songs'
+        response = 'Sure... \'' +  request + '\' will be played after ' + str(play_list_coll.count()) + ' songs'
 
     slack_client.api_call("chat.postMessage", channel=channel,
                           text=response, as_user=True)
