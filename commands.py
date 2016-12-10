@@ -2,6 +2,7 @@ import os, re, time
 import urllib2
 from pymongo import MongoClient, ASCENDING
 import youtube_util
+import youtube_search
 
 NATHAS_UI_ENDPOINT = os.environ.get("NATHAS_UI_ENDPOINT")
 mongo_client = MongoClient()
@@ -48,6 +49,14 @@ def play(slack_client, command, user, channel):
         request_record["request_string"] = request
 
     play_list_coll.insert_one(request_record)
+
+    channelId = youtube_util.is_artist(request)
+    if channelId:
+        tracks = youtube_search.get_top_tracks_for_channel(channelId)
+        response = "```\nTop tracks of " + request + "\n"
+        for index, track in enumerate(tracks, start=1):
+            response += str(index) + ". *" + track + "*\n"
+        return response + '```'
 
     prev_queue_size = play_list_coll.count() - 1
 
