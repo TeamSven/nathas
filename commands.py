@@ -1,6 +1,6 @@
 import os, re, time
 import urllib2
-from pymongo import MongoClient
+from pymongo import MongoClient, ASCENDING
 import youtube_util
 
 NATHAS_UI_ENDPOINT = os.environ.get("NATHAS_UI_ENDPOINT")
@@ -11,15 +11,28 @@ def hello():
     return "You say hello, I say world!"
 
 def help():
-    return "Type @nathas command [options] \n" + \
-        "play [song name] \t \t to add a song to queue \n" + \
-        "clear all \t \t to clear the queue"
+    return "```" + \
+        "Type @nathas command [options] \n\n" + \
+        "list          list the songs in the queue \n" + \
+        "play _[song]_ to add a song to queue \n" + \
+        "clear all     to clear the queue \n" + \
+        "next          to play the next song \n" + \
+        "pause         to pause the current song \n" + \
+        "resume        to resume the paused song \n" + \
+        "volumeup      to increase the volume of the player \n" + \
+        "volumedown    to decrease the volume of the player \n" + \
+        "```"
 
-def clear_all():
-    db['playlist'].delete_many({})
-    return "Sure, I have cleared the queue"
+def list():
+    records = db['playlist'].find().sort([("requested_at", ASCENDING)])
+    response = ""
+    for index, record in enumerate(records, start = 1):
+        response += str(index) + ". *" + record["request_string"] + "*\n" \
+                if record["request_string"] is not None else record["request_url"] + "*\n"
+    return response
 
-def play(command, user, channel):
+
+def play(slack_client, command, user, channel):
     play_list_coll = db['playlist']
     request_record = {
         "requested_by": user,
@@ -27,13 +40,12 @@ def play(command, user, channel):
     }
 
     request = ' '.join(command.split(' ')[1:])
-    artist = ''
+
     try:
         request = re.search("(?P<url>https?://[^\s]+)", request).group("url")
         request_record["request_url"] = request
     except AttributeError:
         request_record["request_string"] = request
-        artists = youtube_util.get_artists(request)
 
     play_list_coll.insert_one(request_record)
 
@@ -46,15 +58,37 @@ def play(command, user, channel):
     else:
         response = 'Sure... \'' +  request + '\' will be played after ' + str(prev_queue_size) + ' songs'
 
-    print artists
+    slack_client.api_call("chat.postMessage", channel=channel,
+                          text=response, as_user=True)
+
+    artists = []
+    if request_record["request_string"]:
+        artists = youtube_util.get_artists(request)
     if len(artists) > 0:
-        response += "\n The song was by `" + '`,`'.join(artists) + "`"
+        response = "\n > The song was by `" + '`,`'.join(artists) + "`"
 
     return response
-
-def pause():
-    return "Not Yet Implemented"
 
 def next():
     urllib2.urlopen(NATHAS_UI_ENDPOINT + "/next").read()
     return "Consider it done"
+
+def pause():
+    urllib2.urlopen(NATHAS_UI_ENDPOINT + "/pause").read()
+    return "Consider it done"
+
+def resume():
+    urllib2.urlopen(NATHAS_UI_ENDPOINT + "/resume").read()
+    return "Consider it done"
+
+def volume_up():
+    urllib2.urlopen(NATHAS_UI_ENDPOINT + "/volumeup").read()
+    return "Consider it done"
+
+def volume_down():
+    urllib2.urlopen(NATHAS_UI_ENDPOINT + "/volumedown").read()
+    return "Consider it done"
+
+def clear_all():
+    db['playlist'].delete_many({})
+    return "Sure, I have cleared the queue"

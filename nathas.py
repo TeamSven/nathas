@@ -11,11 +11,17 @@ AT_BOT = "<@" + BOT_ID + ">"
 # BOT COMMANDS
 HELLO_COMMAND = "hello"
 HELP_COMMAND = "help"
+LIST_COMMAND = "list"
+RESUME_COMMAND = "resume"
 PLAY_COMMAND = "play"
 PAUSE_COMMAND = "pause"
 NEXT_COMMAND = "next"
 NEXT_COMMAND_1  = "play next"
 CLEAR_COMMAND = "clear all"
+VOLUME_UP_COMMAND = "volume up"
+VOLUME_UP_COMMAND1 = "volumeup"
+VOLUME_DOWN_COMMAND = "volume down"
+VOLUME_DOWN_COMMAND1 = "volumedown"
 
 slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
 mongo_client = MongoClient()
@@ -33,13 +39,22 @@ def handle_command(command, user, channel):
         response = commands.hello()
     elif command.startswith(HELP_COMMAND):
         response = commands.help()
+    elif command.startswith(LIST_COMMAND):
+        response = commands.list()
     elif command.startswith(CLEAR_COMMAND):
         response = commands.clear_all()
+    elif command.startswith(PAUSE_COMMAND):
+        response = commands.pause()
     elif command.startswith(NEXT_COMMAND) or command.startswith(NEXT_COMMAND_1):
         response = commands.next()
+    elif command.startswith(RESUME_COMMAND):
+        response = commands.resume()
     elif command.startswith(PLAY_COMMAND):
-        response = commands.play(command, user, channel)
-
+        response = commands.play(slack_client, command, user, channel)
+    elif command.startswith(VOLUME_UP_COMMAND) or command.startswith(VOLUME_UP_COMMAND1):
+        response = commands.volume_up()
+    elif command.startswith(VOLUME_DOWN_COMMAND) or command.startswith(VOLUME_DOWN_COMMAND1):
+        response = commands.volume_down()
 
     slack_client.api_call("chat.postMessage", channel=channel,
                           text=response, as_user=True)

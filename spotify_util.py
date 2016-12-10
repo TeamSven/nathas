@@ -8,6 +8,7 @@ def is_artist(token):
     items = results['artists']['items']
 
     if len(items) > 0:
+        print items
         return True
     else:
         return False

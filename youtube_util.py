@@ -4,7 +4,6 @@ import spotify_util
 
 def get_artists(query):
     video_data = youtube_search.search({'q': query, 'max_results': 5})
-    print video_data
     if video_data:
         tokens = []
         for datum in video_data:
@@ -14,6 +13,6 @@ def get_artists(query):
         artists = []
         for token in tokens:
             if spotify_util.is_artist(token.strip()):
-                artists.append(token.strip())
+                artists.append(token.strip().lower())
 
-        return set(artists)
+        return set(map(lambda x:x.title(), artists))
