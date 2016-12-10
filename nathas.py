@@ -1,7 +1,7 @@
 import os
 import time
 from slackclient import SlackClient
-#from pymongo import MongoClient
+from pymongo import MongoClient
 
 BOT_ID = os.environ.get("BOT_ID")
 AT_BOT = "<@" + BOT_ID + ">"
@@ -10,8 +10,8 @@ PLAY_COMMAND = "play"
 CLEAR_COMMAND = "clear all"
 
 slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
-#mongo_client = MongoClient()
-#db = mongo_client['witchdoctor']
+mongo_client = MongoClient()
+db = mongo_client['nathas']
 
 def handle_command(command, channel):
     """
@@ -21,19 +21,19 @@ def handle_command(command, channel):
     """
     response = "Not sure what you mean. Use the *" + PLAY_COMMAND + \
                "* command with numbers, delimited by spaces."
-#    if command.startswith(CLEAR_COMMAND):
-#        db['playlist'].delete_many({})
-#        response = "Sure...I will stop playing"
+    if command.startswith(CLEAR_COMMAND):
+        db['playlist'].delete_many({})
+        response = "Sure...I will stop playing"
     if command.startswith(HELLO_COMMAND):
         response = "You say hello, I say world!"
-#    elif command.startswith(PLAY_COMMAND):
-#        play_list_coll = db['playlist']
-#        request = ' '.join(command.split(' ')[1:])
-#        play_list_coll.insert_one({
-#            "request_string": request,
-#            "requested_at": long(time.time())
-#        })
-#        response = 'Sure... \'' +  request+ '\' will be played after ' + str(play_list_coll.count()) + ' songs'
+    elif command.startswith(PLAY_COMMAND):
+        play_list_coll = db['playlist']
+        request = ' '.join(command.split(' ')[1:])
+        play_list_coll.insert_one({
+            "request_string": request,
+            "requested_at": long(time.time())
+        })
+        response = 'Sure... \'' +  request+ '\' will be played after ' + str(play_list_coll.count()) + ' songs'
 
     slack_client.api_call("chat.postMessage", channel=channel,
                           text=response, as_user=True)
