@@ -46,7 +46,11 @@ volumeup      to increase the volume of the player
 volumedown    to decrease the volume of the player
 ```
 
-<div>
-  <img src="schreenshots/help.png" height="30%" width="30%">
-  <img src="http://i.imgur.com/xEfxrqb.png" height="30%" width="30%">
-</div>
+<img src="screenshots/help.png" height="30%" width="30%">
+<img src="screenshots/list.png" height="30%" width="30%">
+<img src="screenshots/next.png" height="30%" width="30%">
+<img src="screenshots/playall.png" height="30%" width="30%">
+<img src="screenshots/play.png" height="30%" width="30%">
+<img src="screenshots/resume.png" height="30%" width="30%">
+<img src="screenshots/shuffle.png" height="30%" width="30%">
+<img src="screenshots/suggest.png" height="30%" width="30%">
