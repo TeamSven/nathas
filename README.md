@@ -45,3 +45,8 @@ shuffle       to shuffle your song queue
 volumeup      to increase the volume of the player
 volumedown    to decrease the volume of the player
 ```
+
+<div>
+  <img src="schreenshots/help.png" height="30%" width="30%">
+  <img src="http://i.imgur.com/xEfxrqb.png" height="30%" width="30%">
+</div>
