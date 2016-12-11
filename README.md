@@ -46,13 +46,44 @@ volumeup      to increase the volume of the player
 volumedown    to decrease the volume of the player
 ```
 
+## Views
+
+### Get help
 <div>
-<img src="screenshots/help.png" height="30%" width="30%">
-<img src="screenshots/list.png" height="30%" width="30%">
-<img src="screenshots/next.png" height="30%" width="30%">
-<img src="screenshots/playall.png" height="30%" width="30%">
-<img src="screenshots/play.png" height="30%" width="30%">
-<img src="screenshots/resume.png" height="30%" width="30%">
-<img src="screenshots/shuflle.png" height="30%" width="30%">
-<img src="screenshots/suggest.png" height="30%" width="30%">
+  <img src="screenshots/help.png" height="70%" width="70%">
+</div>
+
+### List queue
+<div>
+  <img src="screenshots/list.png" height="50%" width="50%">
+</div>
+
+### Play next 
+<div>
+  <img src="screenshots/next.png" height="50%" width="50%">
+</div>
+
+### Play all
+<div>
+  <img src="screenshots/playall.png" height="50%" width="50%">
+</div>
+
+### Play a song
+<div>
+  <img src="screenshots/play.png" height="50%" width="50%">
+</div>
+
+### Resume song
+<div>
+  <img src="screenshots/resume.png" height="50%" width="50%">
+</div>
+
+### Shuffle the queue
+<div>
+  <img src="screenshots/shuflle.png" height="50%" width="50%">
+</div>
+
+### Get suggestion
+<div>
+  <img src="screenshots/suggest.png" height="50%" width="50%">
 </div>
