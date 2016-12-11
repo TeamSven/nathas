@@ -55,17 +55,23 @@ def handle_command(command, user, channel):
         response = commands.volume_down()
 
     if response:
-        slack_client.api_call("chat.postMessage", channel=channel,text=response, as_user=True)
+        slack_client.api_call("chat.postMessage", channel=channel, text=response, as_user=True)
 
 
 def parse_slack_output(slack_rtm_output):
+    command = None
+    user = None
+    channel = None
+
     output_list = slack_rtm_output
     if output_list and len(output_list) > 0:
         for output in output_list:
             if output and 'text' in output and AT_BOT in output['text']:
-                return output['text'].split(AT_BOT)[1].strip().lower(), \
-                       output['user'], output['channel']
-    return None, None, None
+                command = output['text'].split(AT_BOT)[1].strip().lower()
+                user = output['user']
+                channel = output['channel']
+
+    return command, user, channel
 
 def suggestion_engine():
     if db['playlist'].find().count() == 0:
