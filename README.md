@@ -32,7 +32,8 @@ pip install -r requirements.txt
 
 ### 4. Commands available
 ```
-Type @nathas command [options] 
+$ @nathas command [options] 
+
 list          list the songs in the queue
 play _[song]_ to add a song to queue
 clear all     to clear the queue
