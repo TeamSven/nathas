@@ -5,11 +5,6 @@ from apiclient.discovery import build
 from apiclient.errors import HttpError
 from oauth2client.tools import argparser
 
-
-# Set DEVELOPER_KEY to the API key value from the APIs & auth > Registered apps
-# tab of
-#   https://cloud.google.com/console
-# Please ensure that you have enabled the YouTube Data API for your project.
 DEVELOPER_KEY = os.environ.get("YT_DEVELOPER_KEY")
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
@@ -18,8 +13,6 @@ def search_list(options):
   youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
     developerKey=DEVELOPER_KEY)
 
-  # Call the search.list method to retrieve results matching the specified
-  # query term.
   search_response = youtube.search().list(
     q=options['q'],
     part="id,snippet",
@@ -27,14 +20,7 @@ def search_list(options):
     maxResults=options['max_results']
   ).execute()
 
-  channels = []
-
-  # Add each result to the appropriate list, and then display the lists of
-  # matching videos, channels, and playlists.
-  for search_result in search_response.get("items", []):
-    if search_result["id"]["kind"] == "youtube#channel":
-      channels.append((search_result["snippet"]["title"], search_result["id"]["channelId"]))
-
+  channels = get_list_from_search_response(search_responsem, "youtube#channel", "channelId")
   return channels
 
 
@@ -42,22 +28,21 @@ def search(options):
   youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
     developerKey=DEVELOPER_KEY)
 
-  # Call the search.list method to retrieve results matching the specified
-  # query term.
   search_response = youtube.search().list(
     q=options['q'],
     part="id,snippet",
     maxResults=options['max_results']
   ).execute()
 
+  videos = get_list_from_search_response(search_responsem, "youtube#video", "videoId")
+  return videos
+
+
+def get_list_from_search_response(response, kind, id):
   videos = []
-
-  # Add each result to the appropriate list, and then display the lists of
-  # matching videos, channels, and playlists.
-  for search_result in search_response.get("items", []):
-    if search_result["id"]["kind"] == "youtube#video":
-      videos.append((search_result["snippet"]["title"], search_result["id"]["videoId"]))
-
+  for search_result in response.get("items", []):
+    if search_result["id"]["kind"] == kind:
+      videos.append((search_result["snippet"]["title"], search_result["id"][id]))
   return videos
 
 def get_top_tracks_for_channel(channel_id):

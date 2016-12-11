@@ -53,20 +53,19 @@ def play(slack_client, command, user, channel):
         tracks = youtube_search.get_top_tracks_for_channel(channelId)
         response = "```\nTop tracks of " + request + "\n"
         for index, track in enumerate(tracks, start=1):
-            response += str(index) + ". *" + track + "*\n"
-        return response + '```'
+            response += str(index) + ". *" + track + "*\n ```"
 
-    play_list_coll.insert_one(request_record)
-    response = get_confirm_play_msg(play_list_coll.count() - 1)
+    else:
+        play_list_coll.insert_one(request_record)
+        response = get_confirm_play_msg(play_list_coll.count() - 1)
 
-    slack_client.api_call("chat.postMessage", channel=channel,
-                          text=response, as_user=True)
+        slack_client.api_call("chat.postMessage", channel=channel,
+                            text=response, as_user=True)
 
-    artists = []
-    if request_record["request_string"]:
-        artists = youtube_util.get_artists(request)
-    if len(artists) > 0:
-        response = "\n > The song was by `" + '`,`'.join(artists) + "`"
+        artists = []
+        if request_record["request_string"]:
+            artists = youtube_util.get_artists(request)
+            response = "\n > Related  `" + '`,`'.join(artists) + "`"
 
     return response
 
