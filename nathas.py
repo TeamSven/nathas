@@ -1,4 +1,4 @@
-import os, time
+import os, time, random
 from slackclient import SlackClient
 from pymongo import MongoClient
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -19,6 +19,7 @@ NEXT_COMMAND = "next"
 NEXT_COMMAND_1  = "play next"
 CLEAR_COMMAND = "clear all"
 SHUFFLE_COMMAND = "shuffle"
+SUGGEST_COMMAND = "suggest"
 VOLUME_UP_COMMAND = "volume up"
 VOLUME_UP_COMMAND1 = "volumeup"
 VOLUME_DOWN_COMMAND = "volume down"
@@ -47,6 +48,8 @@ def handle_command(command, user, channel):
         response = commands.resume(slack_client, channel)
     elif command.startswith(SHUFFLE_COMMAND):
         response = commands.shuffle()
+    elif SUGGEST_COMMAND in command:
+        response = suggestion_engine()
     elif command.startswith(PLAY_COMMAND):
         response = commands.play(slack_client, command, user, channel)
     elif command.startswith(VOLUME_UP_COMMAND) or command.startswith(VOLUME_UP_COMMAND1):
@@ -76,12 +79,19 @@ def parse_slack_output(slack_rtm_output):
 
 def suggestion_engine():
     if db['playlist'].find().count() == 0:
-        response = "```Your queue is empty. Here are few suggestions for you \n"
-        response += "1. *Malare Ninne* \n"
-        response += "2. *Kaalam kettu poi* \n"
-        response += "3. *Chinna Chinna premam* \n"
-        response += "4. *Pularikalo Charlie* \n"
-        response += "5. *Akkam pakkam paar* \n```"
+        response = ""
+        related_songs = []
+        cursor = db['history'].find().limit(50)
+        for document in cursor:
+            r_songs = document['song']['related']
+            for song in r_songs:
+                related_songs.append(song['title'])
+        indices = random.sample(xrange(len(related_songs)), 10)
+        response = "```I have few suggestions for you \n"
+        for i, index in enumerate(indices, start=1):
+            response +=  str(i) + ". " + related_songs[index] + "\n"
+        response += "```"
+
         slack_client.api_call("chat.postMessage", channel="C3DR3NLET", text=response, as_user=True)
 
 
