@@ -1,6 +1,6 @@
 
 # Nathas, your Slack DJ
-[![Code Climate](https://codeclimate.com/github/TeamSven/nathas/badges/gpa.svg)](https://codeclimate.com/github/TeamSven/nathas). 
+[![Code Climate](https://codeclimate.com/github/TeamSven/nathas/badges/gpa.svg)](https://codeclimate.com/github/TeamSven/nathas)  ![MIT](https://img.shields.io/dub/l/vibe-d.svg)
 
 ![Nathas](nathas.png)
 
