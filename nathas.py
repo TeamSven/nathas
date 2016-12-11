@@ -14,6 +14,7 @@ HELP_COMMAND = "help"
 LIST_COMMAND = "list"
 RESUME_COMMAND = "resume"
 PLAY_COMMAND = "play"
+PLAY_ALL_COMMAND = "play all"
 PAUSE_COMMAND = "pause"
 NEXT_COMMAND = "next"
 NEXT_COMMAND_1  = "play next"
@@ -31,6 +32,14 @@ db = mongo_client['nathas']
 
 def handle_command(command, user, channel):
     response = "Not sure what you mean. Use `help` command"
+    if db["suggested"].count() > 0:
+        if command.startswith(PLAY_ALL_COMMAND):
+            record = db["suggested"].find().limit(1).next()
+            suggested_songs = record["suggested_songs"]
+            for song in suggested_songs:
+                commands.play(slack_client, song, user, channel)
+        else:
+            db["suggested"].delete_many({})
 
     if command.startswith(HELLO_COMMAND):
         response = commands.hello()
@@ -91,6 +100,9 @@ def suggestion_engine():
         for i, index in enumerate(indices, start=1):
             response +=  str(i) + ". " + related_songs[index] + "\n"
         response += "```"
+
+        suggested_songs = [related_songs[i] for i in indices]
+        db['suggested'].insert_one({"suggested_songs": suggested_songs})
 
         slack_client.api_call("chat.postMessage", channel="C3DR3NLET", text=response, as_user=True)
 
