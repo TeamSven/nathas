@@ -29,3 +29,18 @@ pip install -r requirements.txt
 * `BOT_ID`: Once you have created a Slack Bot, *run get_bot_id.py*.  
 * `YT_DEVELOPER_KEY`: Youtube developer key to access Data API.  
 * `NATHAS_UI_ENDPOINT`: IP address and port number of the UI application.  
+
+### 4. Commands available
+```
+Type @nathas command [options] 
+list          list the songs in the queue
+play _[song]_ to add a song to queue
+clear all     to clear the queue
+next          to play the next song
+pause         to pause the current song
+resume        to resume the paused song
+suggest       to get song suggestion
+shuffle       to shuffle your song queue
+volumeup      to increase the volume of the player
+volumedown    to decrease the volume of the player
+```
