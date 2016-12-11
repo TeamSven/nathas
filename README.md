@@ -63,6 +63,11 @@ volumedown    to decrease the volume of the player
   <img src="screenshots/next.png" height="40%" width="40%">
 </div>
 
+### Play an artist
+<div>
+  <img src="screenshots/artist.png" height="90%" width="90%">
+</div>
+
 ### Play all
 <div>
   <img src="screenshots/playall.png" height="30%" width="30%">
@@ -86,4 +91,9 @@ volumedown    to decrease the volume of the player
 ### Get suggestion
 <div>
   <img src="screenshots/suggest.png" height="90%" width="90%">
+</div>
+
+### Control volume
+<div>
+  <img src="screenshots/volumeup.png" height="30%" width="30%">
 </div>
