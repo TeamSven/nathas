@@ -70,6 +70,7 @@ def parse_slack_output(slack_rtm_output):
                 command = output['text'].split(AT_BOT)[1].strip().lower()
                 user = output['user']
                 channel = output['channel']
+                break
 
     return command, user, channel
 

@@ -57,7 +57,7 @@ def play(slack_client, command, user, channel):
 
     else:
         play_list_coll.insert_one(request_record)
-        response = get_confirm_play_msg(play_list_coll.count() - 1)
+        response = get_confirm_play_msg(play_list_coll.count() - 1, request)
 
         slack_client.api_call("chat.postMessage", channel=channel,
                             text=response, as_user=True)
@@ -69,7 +69,7 @@ def play(slack_client, command, user, channel):
 
     return response
 
-def get_confirm_play_msg(prev_queue_size):
+def get_confirm_play_msg(prev_queue_size, request):
     if prev_queue_size == 0:
         response = 'Sure... \'' +  request + '\' will be played next'
     elif prev_queue_size == 1:
@@ -84,7 +84,7 @@ def next(slack_client, channel):
     try:
         cursor.next()
         next_song = cursor.next()
-        send_message_with_attachment(next_song['request_string'])
+        send_message_with_attachment(slack_client, channel, next_song['request_string'])
     except StopIteration:
         pass
     urllib2.urlopen(NATHAS_UI_ENDPOINT + "/next").read()
@@ -97,7 +97,7 @@ def resume(slack_client, channel):
     cursor = get_sorted_cursor(1)
     if cursor.hasNext():
         next_song = cursor.next()
-        send_message_with_attachment(next_song['request_string'])
+        send_message_with_attachment(slack_client, channel, next_song['request_string'])
     urllib2.urlopen(NATHAS_UI_ENDPOINT + "/resume").read()
 
 def volume_up():
@@ -119,6 +119,6 @@ def clear_all():
 def get_sorted_cursor(limit_size):
     return db['playlist'].find().sort([("requested_at", ASCENDING)]).limit(limit_size)
 
-def send_message_with_attachment(title):
+def send_message_with_attachment(slack_client, channel, title):
     attachment = [{"color": "#439FE0","title": "Now Playing","text": title}]
     slack_client.api_call("chat.postMessage", channel=channel, attachments=attachment, text=title, as_user=True)

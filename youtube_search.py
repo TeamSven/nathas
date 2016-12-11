@@ -20,7 +20,7 @@ def search_list(options):
     maxResults=options['max_results']
   ).execute()
 
-  channels = get_list_from_search_response(search_responsem, "youtube#channel", "channelId")
+  channels = get_list_from_search_response(search_response, "youtube#channel", "channelId")
   return channels
 
 
@@ -34,7 +34,7 @@ def search(options):
     maxResults=options['max_results']
   ).execute()
 
-  videos = get_list_from_search_response(search_responsem, "youtube#video", "videoId")
+  videos = get_list_from_search_response(search_response, "youtube#video", "videoId")
   return videos
 
 
