@@ -37,7 +37,9 @@ def handle_command(command, user, channel):
             record = db["suggested"].find().limit(1).next()
             suggested_songs = record["suggested_songs"]
             for song in suggested_songs:
-                commands.play(slack_client, song, user, channel)
+                db["playlist"].insert_one({"requested_by": user, "requested_at": long(time.time()), "request_string": song})
+                response = "Added all the songs :+1:"
+            command = ""
         else:
             db["suggested"].delete_many({})
 
@@ -99,7 +101,7 @@ def suggestion_engine():
         response = "```I have few suggestions for you \n"
         for i, index in enumerate(indices, start=1):
             response +=  str(i) + ". " + related_songs[index] + "\n"
-        response += "```"
+        response += "Reply `play all` to play all of them \n ```"
 
         suggested_songs = [related_songs[i] for i in indices]
         db['suggested'].insert_one({"suggested_songs": suggested_songs})
@@ -112,7 +114,7 @@ if __name__ == "__main__":
     if slack_client.rtm_connect():
         print("nathas connected and running!")
         bg_scheduler = BackgroundScheduler()
-        bg_scheduler.add_job(suggestion_engine, 'interval', seconds=60)
+        bg_scheduler.add_job(suggestion_engine, 'interval', seconds=200)
         bg_scheduler.start()
         while True:
             command, user, channel = parse_slack_output(slack_client.rtm_read())

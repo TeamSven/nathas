@@ -20,6 +20,8 @@ def help():
         "next          to play the next song \n" + \
         "pause         to pause the current song \n" + \
         "resume        to resume the paused song \n" + \
+        "suggest       to get song suggestion \n" + \
+        "shuffle       to shuffle your song queue \n" + \
         "volumeup      to increase the volume of the player \n" + \
         "volumedown    to decrease the volume of the player \n" + \
         "```"
@@ -30,6 +32,8 @@ def list():
     for index, record in enumerate(records, start = 1):
         response += str(index) + ". *" + record["request_string"] + "*\n" \
                 if record["request_string"] is not None else record["request_url"] + "*\n"
+    if not response:
+        response = "The queue is currently empty :flushed:"
     return response
 
 
@@ -95,10 +99,13 @@ def pause():
 
 def resume(slack_client, channel):
     cursor = get_sorted_cursor(1)
-    if cursor.hasNext():
+    try:
         next_song = cursor.next()
         send_message_with_attachment(slack_client, channel, next_song['request_string'])
-    urllib2.urlopen(NATHAS_UI_ENDPOINT + "/resume").read()
+        urllib2.urlopen(NATHAS_UI_ENDPOINT + "/resume").read()
+    except StopIteration:
+        pass
+
 
 def volume_up():
     urllib2.urlopen(NATHAS_UI_ENDPOINT + "/volumeup").read()
