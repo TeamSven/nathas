@@ -29,3 +29,71 @@ pip install -r requirements.txt
 * `BOT_ID`: Once you have created a Slack Bot, *run get_bot_id.py*.  
 * `YT_DEVELOPER_KEY`: Youtube developer key to access Data API.  
 * `NATHAS_UI_ENDPOINT`: IP address and port number of the UI application.  
+
+### 4. Commands available
+```
+$ @nathas command [options] 
+
+list          list the songs in the queue
+play _[song]_ to add a song to queue
+clear all     to clear the queue
+next          to play the next song
+pause         to pause the current song
+resume        to resume the paused song
+suggest       to get song suggestion
+shuffle       to shuffle your song queue
+volumeup      to increase the volume of the player
+volumedown    to decrease the volume of the player
+```
+
+## Views
+
+### Get help
+<div>
+  <img src="screenshots/help.png" height="60%" width="60%">
+</div>
+
+### List queue
+<div>
+  <img src="screenshots/list.png" height="90%" width="90%">
+</div>
+
+### Play next 
+<div>
+  <img src="screenshots/next.png" height="40%" width="40%">
+</div>
+
+### Play an artist
+<div>
+  <img src="screenshots/artist.png" height="90%" width="90%">
+</div>
+
+### Play all
+<div>
+  <img src="screenshots/playall.png" height="30%" width="30%">
+</div>
+
+### Play a song
+<div>
+  <img src="screenshots/play.png" height="40%" width="40%">
+</div>
+
+### Resume song
+<div>
+  <img src="screenshots/resume.png" height="60%" width="60%">
+</div>
+
+### Shuffle the queue
+<div>
+  <img src="screenshots/shuflle.png" height="30%" width="30%">
+</div>
+
+### Get suggestion
+<div>
+  <img src="screenshots/suggest.png" height="90%" width="90%">
+</div>
+
+### Control volume
+<div>
+  <img src="screenshots/volumeup.png" height="30%" width="30%">
+</div>
